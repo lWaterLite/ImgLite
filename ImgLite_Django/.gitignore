@@ -7,6 +7,11 @@ __pycache__
 # IDE Folder
 .idea
 .vscode
+
+# Project Configration
+test.py
+/utils/RSA/*.pem
+
 # C extensions
 *.so
 
