@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory} from "vue-router";
-import Login from "@/view/gateway/Login.vue";
+import Login from "@/view/authentication/Login.vue";
 import Home from "@/view/Home.vue"
-import Register from "@/view/gateway/Register.vue";
-import BedRock from "@/view/bedrock/BedRock.vue";
-import Uploads from "@/view/bedrock/main/Uploads.vue";
-import View from "@/view/bedrock/main/View.vue";
+import Register from "@/view/authentication/Register.vue";
+import Title from "@/view/image/Title.vue";
+import Uploads from "@/view/image/main/Uploads.vue";
+import View from "@/view/image/main/View.vue";
 
 const routes = [
     {
@@ -24,8 +24,8 @@ const routes = [
         component: Register
     },
     {
-        path: '/bedrock',
-        component: BedRock,
+        path: '/title',
+        component: Title,
         children: [{
             path: '/uploads',
             component: Uploads

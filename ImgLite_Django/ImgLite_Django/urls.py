@@ -22,8 +22,9 @@ from image.views import getImgBinaryByImgUUID, downloadImgFileByImgUUID
 urlpatternsSub = [
     path('image/', include('image.urls')),
     path('auth/', include('authentication.urls')),
+    path('state/', include('statement.urls')),
     path('token', get_csrf_token),
-    path('p/<str:imgUUID>', getImgBinaryByImgUUID),
+    path('r/<str:imgUUID>', getImgBinaryByImgUUID),
     path('d/<str:imgUUID>', downloadImgFileByImgUUID)
 ]
 

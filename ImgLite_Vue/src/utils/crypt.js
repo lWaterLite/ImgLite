@@ -1,6 +1,6 @@
 import JSEncrypt from "jsencrypt";
 
-const publicKey = '-----BEGIN RSA PUBLIC KEY-----MEgCQQC0EFaB7ZryMQj17WV6W2KbQturkT038Ux95d7PYFWkIoFaD5qYeleMuwrd7/y+FsvnaJKcQwuNMNoTa7+G3w39AgMBAAE=-----END RSA PUBLIC KEY-----'
+const publicKey = '-----BEGIN RSA PUBLIC KEY-----MEgCQQClsUgHq/LhJOg/+N4xtJTBNekqlVW60iEK2/MNYzowz7d5Db+Ipkynhhv3qKr7gbDNHvs8kxBh39WZqH4HKC3vAgMBAAE=-----END RSA PUBLIC KEY-----'
 
 export default {
     rsaPublicData(data) {

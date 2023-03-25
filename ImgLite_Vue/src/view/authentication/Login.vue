@@ -63,7 +63,7 @@ export default{
               sessionStorage.setItem('userUUID', response.data['userUUID'])
               sessionStorage.setItem('status', response.data['status'])
             }
-              this.$router.push('/bedrock')
+              this.$router.push('/title')
           })
           .catch(err => {
             this.loginErrorStatus = true

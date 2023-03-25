@@ -9,7 +9,7 @@
                 <el-link target="_blank"
                          :underline="false"
                          type="primary"
-                         :href="baseURL+'p/'+ scope.row.imgUUID">{{ scope.row.imgFilename }}</el-link>
+                         :href="baseURL+'r/'+ scope.row.imgUUID">{{ scope.row.imgFilename }}</el-link>
               </template>
               <el-image :src="baseURL+'image/thumb/'+ scope.row.imgUUID" fit="scale-down"  />
             </el-popover>
@@ -84,7 +84,7 @@ export default {
 
     axiosDefaultInstance.get('image/images', {
       params: {
-        userUUID: sessionStorage.getItem('userUUID'),
+        userUUID: this.userUUID,
         page: this.currentPage
       }
     })
@@ -153,8 +153,8 @@ export default {
     onDownload(imgUUID) {
       window.open(baseURL+'d/'+imgUUID, '_blank')
     },
-    onCopy(pic_uuid) {
-      this.$copyText(baseURL+'p/'+pic_uuid)
+    onCopy(imgUUID) {
+      this.$copyText(baseURL+'r/'+imgUUID)
           .then(() => {
             ElMessage({
               duration: 2000,

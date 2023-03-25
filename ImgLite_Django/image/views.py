@@ -13,7 +13,24 @@ from utils.Response import BadRequestMethodResponse, BadResponse, NotFoundRespon
 from .models import ImgIndex, ImgType, UserIndex
 
 
-def getImgInfoListPageCount(request):
+def getImgInfoListPageCount(request) -> HttpResponse:
+    """
+    This view is used to get image data pages' number.\n
+    The full api is "api/image/page?userUUID=<userUUID>".\n
+    The param is:
+        userUUID: string, user uuid, MUST be RSA encrypted.
+    The requesting method MUST be GET, any other methods are forbidden.\n
+
+    Args:
+        request: The default param of django view functon.
+
+    Returns:
+        HttpResponse, Content-Type='application/json'.
+            The key-value is:
+                pageCount: int, number of data page. 0 when no image stored.
+            If requesting method is unaccepted, it will return a BadRequestMethodResponse,
+                see details in its docstring.
+    """
     if request.method == 'GET':
         userUUID = RsaDecrypt(request.GET.get('userUUID', ''))
         userIndex = UserIndex.objects.get(userUUID=userUUID).userIndex
@@ -32,20 +49,26 @@ def getImgInfoListPageCount(request):
 
 def getImgInfoListByUserUUID(request) -> HttpResponse:
     """
-    @summary This view function returns all pictures' info of one user.
+    This view function is used to get pictures' info of one user in certain data page.\n
+    The full api is "api/image/images?userUUID=<userUUID>&page=<page>".\n
+    The params are:
+        userUUID: user uuid, MUST be RSA encrypted.\n
+        page: data page number.
+    The requesting method MUST be GET, any other methods are forbidden.\n
 
-    @param request: The default param of django view function.
-    @return: A HttpResponse, Content-Type="application/json", the detail content are as followed.
+    Args:
+        request: The default param of django view functon.
 
-    For the content it MUST be a json array, containing the images' info.
-    For ech element in array, it MUST BE an object. The key-value pair are as followed:
-        - imgUUID: string, the uuid of image.
-        - imgFilename: string, the filename of image, with suffix.
-        - imgUploadDate: string, the upload date of image, in form of "YYYY-MM-DD".
-
-    @warning This function only supports GET method, if you are trying request with any other method,
-    it will return with a HttpResponse, containing json with an object. Inner content can be found in utils/Response.
-
+    Returns:
+        HttpResponse, Content-Type="application/json".
+            It MUST be a json array containing image details, for each element in the array,
+                it MUST be a json object with three key-values.
+                imgUUID: string, the uuid of image.
+                imgFilename: string, the filename of image, with suffix.
+                imgUploadDate: string, the upload date of image, in form of "YYYY-MM-DD".
+            If no image is stored, return an empty array.
+            If requesting method is unaccepted, it will return a BadRequestMethodResponse,
+                see details in its docstring.
     """
     if request.method == 'GET':
         userUUID = RsaDecrypt(request.GET.get('userUUID', ''))
@@ -72,7 +95,26 @@ def getImgInfoListByUserUUID(request) -> HttpResponse:
         return BadRequestMethodResponse()
 
 
-def getImgBinaryByImgUUID(request, imgUUID):
+def getImgBinaryByImgUUID(request, imgUUID: str) -> HttpResponse:
+    """
+    This view is used to get image file for direct link.
+    The full api is "api/r/<imgUUID>"\n
+    The param is:
+        imgUUID: string, image uuid.\n
+    Be advised that there is no authentication when requesting.\n
+    The requesting method MUST be GET, any other methods are forbidden.\n
+
+    Args:
+        request: The default param of django view functon.
+        imgUUID: string, image uuid.
+
+    Returns:
+        HttpResponse, Content-Type="image/<type>".
+            It will return the image as an image element, which could be used for direct link.
+            If failed, return a json object with error message.
+            If requesting method is unaccepted, it will return a BadRequestMethodResponse,
+                see details in its docstring.
+    """
     if request.method == 'GET':
         try:
             imgIndexObject = ImgIndex.objects.get(imgUUID=imgUUID)
@@ -97,7 +139,26 @@ def getImgBinaryByImgUUID(request, imgUUID):
         return BadRequestMethodResponse()
 
 
-def getImgThumbByImgUUID(request, imgUUID):
+def getImgThumbByImgUUID(request, imgUUID: str) -> HttpResponse:
+    """
+    This view is used to get image thumbs file for direct link.\n
+    The full api is "api/img/thumb/<imgUUID>".\n
+    The param is:
+        imgUUID: string, image uuid.
+    Be advised that there is no authentication when requesting.\n
+    The requesting method MUST be GET, any other methods are forbidden.\n
+
+    Args:
+        request: The default param of django view functon.
+        imgUUID: string, image uuid.
+
+    Returns:
+        HttpResponse, Content-Type="application/json".
+            It will return the image thumb as an image element, which could be used for direct link.
+            If failed, return a json object with error message.
+            If requesting method is unaccepted, it will return a BadRequestMethodResponse,
+                see details in its docstring.
+    """
     if request.method == 'GET':
         imgIndexObject = ImgIndex.objects.get(imgUUID=imgUUID)
         userIndex = imgIndexObject.userIndex.userIndex
@@ -117,7 +178,26 @@ def getImgThumbByImgUUID(request, imgUUID):
         return BadRequestMethodResponse()
 
 
-def downloadImgFileByImgUUID(request, imgUUID):
+def downloadImgFileByImgUUID(request, imgUUID: str) -> FileResponse | HttpResponse:
+    """
+    This view is used to download image file.\n
+    The full api is "api/d/<imgUUID>".\n
+    The param is:
+        imgUUID: string, image uuid.
+    Be advised that there is no authentication when requesting.\n
+    The requesting method MUST be GET, any other methods are forbidden.\n
+
+    Args:
+        request: The default param of django view functon.
+        imgUUID: string, image uuid.
+
+    Returns:
+        FileResponse if success, HttpResponse otherwise.
+            The FileResponse contains the binary file of image. Filename attached.
+            The HttpResponse contains error message, Content-Type="application/json".
+            If requesting method is unaccepted, it will return a BadRequestMethodResponse,
+                see details in its docstring.
+    """
     if request.method == 'GET':
         imgIndexObject = ImgIndex.objects.get(imgUUID=imgUUID)
         userIndex = imgIndexObject.userIndex.userIndex
@@ -142,6 +222,33 @@ def downloadImgFileByImgUUID(request, imgUUID):
 
 
 def uploadImgFile(request):
+    """
+    This view is used to upload image file.\n
+    The full api is "api/image/upload".\n
+    The requesting method MUST be POST, any other methods are forbidden.\n
+    The Content-Type MUST be "application/form-data"
+    The params are:
+        userUUID: string, user uuid, MUST be RSA encrypted.
+        file: binary, image binary file.
+
+    Args:
+        request: The default param of django view functon.
+
+    Returns:
+        HttpResponse, Content-Type="application/json".
+            It contains a json object, the key-values are:
+                message: string, "success".
+                imgUUID: string, image's uploaded.
+                imgFilename: string, image filename.
+            If requesting method is unaccepted, it will return a BadRequestMethodResponse,
+                see details in its docstring.
+
+    Notes:
+        The image uuid and upload date are auto generated. Since the uuid are
+        generated based on time stamp,  the concurrent request capacity SHOULD
+        be taken into consideration. Use nginx or other high concurrent capability
+        web serve to ensure it work right.
+    """
     if request.method == 'POST':
         userUUID = RsaDecrypt(request.POST['userUUID'])
         userIndexObject = UserIndex.objects.get(userUUID=userUUID)
@@ -196,7 +303,24 @@ def uploadImgFile(request):
         return BadRequestMethodResponse()
 
 
-def deleteImgFile(request):
+def deleteImgFile(request) -> HttpResponse:
+    """
+    The view is used to delete image.\n
+    The full api is "api/img/delete?imgUUID=<imgUUID>&userUUID=<userUUID>"\n
+    The params are:
+        imgUUID: string, image uuid.\n
+        userUUID: string, user uuid, MUST be RSA encrypted.
+    The requesting method MUST be DELETE, any other methods are forbidden.\n
+
+    Args:
+        request: The default param of django view functon.
+
+    Returns:
+        HttpResponse, Content-Type="application/json"
+            Contain the success message when success, error message otherwise.
+            If requesting method is unaccepted, it will return a BadRequestMethodResponse,
+                see details in its docstring.
+    """
     if request.method == 'DELETE':
         imgUUID = request.GET.get('imgUUID', '')
         userUUID = RsaDecrypt(request.GET.get('userUUID', ''))
@@ -221,8 +345,8 @@ def deleteImgFile(request):
             year, month, day = str(imgIndexObject.imgUploadDate).split('-')
             imgTypeName = imgIndexObject.imgType.imgTypeName
             imgIndexObject.delete()
-            os.remove(StaticPath+f'/{userIndex}/{year}/{month}/{day}/{imgUUID}.{imgTypeName}')
-            os.remove(StaticPath+f'/{userIndex}/{year}/{month}/{day}/thumbs/{imgUUID}.{imgTypeName}')
+            os.remove(StaticPath + f'/{userIndex}/{year}/{month}/{day}/{imgUUID}.{imgTypeName}')
+            os.remove(StaticPath + f'/{userIndex}/{year}/{month}/{day}/thumbs/{imgUUID}.{imgTypeName}')
             return HttpResponse(dumps({'message': 'delete success'}), content_type='application/json')
     else:
         return BadRequestMethodResponse()

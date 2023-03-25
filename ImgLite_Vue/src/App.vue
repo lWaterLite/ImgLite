@@ -23,7 +23,7 @@
 
       if (sessionStorage.getItem('status')){
         if (sessionStorage.getItem('status') === 'true') {
-          router.push('/bedrock')
+          router.push('/title')
         }
         else {
           router.push('/home')
@@ -31,7 +31,7 @@
       }
       else if (this.$cookies.isKey('status')) {
         if (this.$cookies.get('status') === 'true') {
-          router.push('/bedrock')
+          router.push('/title')
         }
         else {
           router.push('/home')

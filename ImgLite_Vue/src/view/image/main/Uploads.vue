@@ -32,7 +32,7 @@
               <el-link target="_blank"
                        :underline="false"
                        type="primary"
-                       :href="baseURL+'p/'+ scope.row.imgUUID">{{baseURL+'p/'+ scope.row.imgUUID}}</el-link>
+                       :href="baseURL+'r/'+ scope.row.imgUUID">{{baseURL+'r/'+ scope.row.imgUUID}}</el-link>
             </template>
           </el-table-column>
           <el-table-column width="300px" label="操作">
@@ -64,7 +64,7 @@ export default {
       window.open(baseURL+'d/'+imgUUID, '_blank')
     },
     onCopy(imgUUID) {
-      this.$copyText(baseURL+'p/'+imgUUID)
+      this.$copyText(baseURL+'r/'+imgUUID)
           .then(() => {
             this.$message.success('复制成功!')
           })
