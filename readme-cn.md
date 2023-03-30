@@ -16,7 +16,7 @@ ImgLite 是一个自建图床应用。
 
 介于这是一个测试性质的项目来用于检验我的django学习成果， bug是在所难免的。如果你有任何的意见或是建议，欢迎通过<lwaterlite@126.com>联系我 
 
-如果你正在寻找一个在线图床, 试试我的[ImgList](http://imglite.lwaterlite.cc)吧. 请注意服务器部署在中国大陆。
+如果你正在寻找一个在线图床, 试试我的[ImgLite](http://imglite.lwaterlite.cc)吧. 请注意服务器部署在中国大陆。
 
 如果你想使用这个项目来构建你自己的图床，请在vue和django文件夹中获取他们各自的部署方法。
 
